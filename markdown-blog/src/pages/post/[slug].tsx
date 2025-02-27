@@ -4,6 +4,8 @@ import path from "path";
 import matter from "gray-matter";
 
 const PostPage = ({ frontMatter, content }: any) => {
+
+  //記事が存在しない場合は404メッセージを表示
   if (!frontMatter) {
     return <h1>記事が見つかりません</h1>;
   }
@@ -12,13 +14,16 @@ const PostPage = ({ frontMatter, content }: any) => {
     <div>
       <h1>{frontMatter.title}</h1>
       <p>{content}</p>
+      <article>
+        <p>{content}</p>
+      </article>
     </div>
   );
 };
 
-//全ての投稿のパスを生成
+//全ての投稿のパスを取得
 export const getStaticPaths: GetStaticPaths = async () => {
-  const files = fs.readdirSync(path.join("getPosts"));
+  const files = fs.readdirSync(path.join("Posts"));
 
   const paths = files.map((filename) => ({
     params: {
@@ -34,7 +39,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 //指定された slug の記事を取得
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const filePath = path.join("getPosts", `${params?.slug}.md`);
+  const filePath = path.join("Posts", `${params?.slug}.md`);
   if (!fs.existsSync(filePath)) {
     return { notFound: true }; //404を返す
   }
